@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competition 1</title>
+    <style>
+        /* Style for the body */
+        body {
+            background-image: url('/static/bg.jpeg');
+
+            /* Background image */
+            background-size: cover;
+            /* Cover the entire viewport */
+            font-family: Arial, sans-serif;
+            /* Specify a fallback font */
+            margin: 0;
+            /* Remove default margin */
+            padding: 0;
+            /* Remove default padding */
+            display: flex;
+            /* Use flexbox for vertical centering */
+            justify-content: center;
+            /* Center horizontally */
+            align-items: center;
+            /* Center vertically */
+            height: 100vh;
+            /* Full viewport height */
+        }
+
+        /* Style for the container */
+        .container {
+            text-align: center;
+            /* Center text */
+        }
+
+        /* Style for the cards */
+        .card {
+            background-color: #eeb609;
+            /* Green background for cards */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: calc(50% - 20px);
+            /* Set width to half of the container minus margins */
+            box-sizing: border-box;
+            /* Include padding and border in the width calculation */
+            display: inline-block;
+            /* Display inline-block for horizontal alignment */
+        }
+
+        /* Style for the registration button */
+        .register-button {
+            background-color: #eeb609;
+            /* Blue background for the button */
+            color: #fff;
+            /* White text color */
+            border: none;
+            padding: 15px 30px;
+            /* Padding */
+            border-radius: 5px;
+            /* Rounded corners */
+            cursor: pointer;
+            display: block;
+            /* Make the button a block element */
+            margin: 20px auto 0;
+            /* Add margin at the top, center horizontally */
+            width: fit-content;
+            /* Set button width to fit its content */
+        }
+
+        .register-button:hover {
+            background-color: #004080;
+            /* Darker shade on hover */
+        }
+
+        /* Style for the round boxes */
+        .round-box {
+            background-color: #0056b3;
+            /* Blue background for round boxes */
+            color: #fff;
+            /* White text color */
+            border-radius: 5px;
+            /* Rounded corners */
+            padding: 5px 10px;
+            /* Padding */
+            display: inline-block;
+            /* Display inline-block for horizontal alignment */
+            margin-bottom: 10px;
+            /* Add some margin to separate from cards */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 style="color: #fff;">Competition 1 Details</h1>
+
+        <div class="card">
+
+            <h2>Round 1</h2>
+            <p>Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit ultricies lacus,
+                eget
+                tincidunt purus commodo et.</p>
+            <p>Date: January 1, 2025</p>
+        </div>
+
+        <div class="card">
+
+            <h2>Round 2</h2>
+            <p>Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit ultricies lacus,
+                eget
+                tincidunt purus commodo et.</p>
+            <p>Date: January 15, 2025</p>
+        </div>
+
+        <!-- Registration button -->
+        {% if logged_in %}
+        {% if already_registered %}
+        <button class="register-button">Registered</button>
+        {% else %}
+        <form action="{{ url_for('register_comp1') }}" method="post">
+            <input type="submit" value="Register" class="register-button">
+        </form>
+        {% endif %}
+        {% else %}
+        <p style="color: #fff;">Please log in to register for this competition.</p>
+        {% endif %}
+    </div>
+</body>
+
+</html>

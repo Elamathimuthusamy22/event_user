@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/static/bg.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .dashboard {
+            background-color: #eeb609;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .user-details,
+        .register-details {
+            background-color: black;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            width: 500px;
+            height: 200px;
+        }
+
+        h1 {
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: white;
+            margin-top: 30px;
+        }
+
+        p {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 5px;
+            color: white;
+            border-bottom: 1px solid black;
+            padding-bottom: 5px;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        li::before {
+            content: "➜";
+            color: black;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <h1>Welcome to the Dashboard!!</h1>
+
+        {% if user %}
+        <div class="user-details">
+            <h2>User Details</h2>
+            <p>User ID: {{ user._id }}</p>
+            <p>Username: {{ user.username }}</p>
+            <p>Email: {{ user.email }}</p>
+        </div>
+        {% endif %}
+
+        {% if registrations %}
+        <div class="register-details">
+            <h2>Registered Competitions</h2>
+            <ul>
+                {% for registration in registrations %}
+                <li>{{ registration.event_name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <p>No competitions registered.</p>
+        {% endif %}
+    </div>
+</body>
+
+</html>

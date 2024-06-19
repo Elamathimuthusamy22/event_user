@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<!--Initial Web-page design attempt-->
+
+<head>
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Open Sans', sans-serif;
+            background-image: url('/static/bg.jpeg');
+            background-size: cover;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .competitionbox {
+            width: 600px;
+            background-color: #eeb609;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+
+            margin: auto;
+        }
+
+        h1 {
+            color: black;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .competition {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background-color: #f2bf24;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.386);
+
+        }
+
+        .competition img {
+            width: 200px;
+            /* Adjust the width as needed */
+            border-radius: 10px;
+            margin-bottom: 10px;
+            /* Add margin to separate image from text */
+        }
+
+        .competition h2 {
+            color: black;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .competition p {
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #f2bf24;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-large {
+            padding: 15px 30px;
+            font-size: 18px;
+        }
+    </style>
+    <title>Competitions</title>
+</head>
+
+<body>
+    <div class="competitionbox">
+        <h1>Competitions</h1>
+        <div class="competition">
+
+            <h2>Web Design Challenge</h2>
+            <p>Are you passionate about web design? Competition 1, the Web Design Challenge, is tailored for creative
+                minds who love to code and design visually stunning websites. In this competition, participants will be
+                tasked with designing a responsive and user-friendly website based on a given theme. Whether you're a
+                beginner or an experienced designer, this challenge will test your skills in HTML, CSS, and JavaScript.
+                Showcase your creativity, attention to detail, and ability to create engaging user experiences. Join us
+                and compete for the title of the best web designer!</p>
+            <button onclick="location.href='/comp1'" class="btn btn-block btn-large"> Competition 1</button>
+        </div>
+        <div class="competition">
+
+            <h2>Mobile App Development Contest</h2>
+            <p>Do you have innovative ideas for mobile apps? Join Competition 2, the Mobile App Development Contest, and
+                bring your app concepts to life! This contest is open to developers of all levels who want to create
+                functional and user-centric mobile applications. Participants will have the opportunity to develop
+                mobile apps for iOS or Android platforms using any programming language or framework of their choice.
+                Whether you're passionate about gaming, productivity, social networking, or education, this contest
+                welcomes all app ideas. Get ready to design, develop, and deploy your app, and compete for prizes and
+                recognition in the mobile app development community!.</p>
+            <button onclick="location.href='/comp2'" class="btn btn-block btn-large"> Competition 2</button>
+        </div>
+    </div>
+</body>
+
+</html>
