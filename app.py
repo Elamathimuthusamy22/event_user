@@ -1,11 +1,12 @@
-# app.py
-from flask import Flask, flash, render_template, request, redirect, session, url_for
-from flask import jsonify
+from flask import Flask, request, jsonify, send_from_directory, session, redirect, url_for, flash
 from pymongo import MongoClient
-import bcrypt
+from flask_cors import CORS
 import random
 
 app = Flask(__name__)
+CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+
 app.config.from_pyfile('config.py')
 app.config['SECRET_KEY'] = 'xyz1234nbg789ty8inmcv2134'
 
@@ -24,87 +25,76 @@ def generate_event_id():
     event_id = f"event{event_number}"
     return event_id
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['POST'])
 def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password'].encode('utf-8')
-        email = request.form['email']
-        department = request.form['department']  # New
-        year = request.form['year'] 
+    data = request.get_json()
 
-        hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+    department = data.get('department')
+    year = data.get('year')
 
-        user_id = generate_user_id()
+    # You should hash the password before storing it in production
+    # For simplicity, it's assumed to be hashed in your actual implementation
 
-        user_data = {'_id': user_id, 'username': username, 'password': hashed_password, 'email': email, 'department': department,  
-            'year': year }
-        try:
-            users_collection.insert_one(user_data)
-            return redirect(url_for('login'))
-        except Exception as e:
-            print("Error inserting data into MongoDB:", e)
-            return "An error occurred while registering. Please try again later."
+    user_id = generate_user_id()
 
-    return render_template('register.html')
+    user_data = {
+        '_id': user_id,
+        'username': username,
+        'email': email,
+        'password': password,  # Remember to hash this in production
+        'department': department,
+        'year': year
+    }
 
-@app.route('/login', methods=['GET', 'POST'])
+    try:
+        users_collection.insert_one(user_data)
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        print("Error inserting data into MongoDB:", e)
+        return jsonify({'success': False, 'error': 'Registration failed. Please try again later.'}), 500
+@app.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password'].encode('utf-8')
+        data = request.json
+        email = data.get('email')
+        password = data.get('password')
+
+        # Input validation
+        if not email or not password:
+            return jsonify({'success': False, 'error': 'Email and password are required'}), 400
 
         user_data = users_collection.find_one({'email': email})
 
         if user_data:
-            if bcrypt.checkpw(password, user_data['password']):
+            # Direct plaintext password comparison (not recommended for production)
+            if password == user_data['password']:
                 session['logged_in'] = True
-                session['user_id'] = user_data['_id']
-                return redirect(url_for('home')) 
-        
-        error = 'Invalid email or password. Please try again.'
-        return render_template('login.html', error=error)
-    
-    return render_template('login.html')
+                session['user_id'] = str(user_data['_id'])  # Convert ObjectId to string
+                return jsonify({'success': True}), 200
+
+        return jsonify({'success': False, 'error': 'Invalid email or password'}), 401
+
+    return jsonify({'success': False, 'error': 'Method not allowed'}), 405
+
+
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    return send_from_directory('build', 'index.html')
 
 @app.route('/comp')
 def comp():
-    return render_template('comp.html')
-
-
+    return send_from_directory('build', 'index.html')
 
 @app.route('/comp1')
 def comp1():
-    if 'logged_in' in session and session['logged_in']:
-        user_id = session['user_id']
-        event_name = 'Competition 1'
-
-        already_registered = bool(events_collection.find_one({'user_id': user_id, 'event_name': event_name}))
-
-        return render_template('comp1.html', logged_in=True, already_registered=already_registered)
-
-    else:
-        return render_template('comp1.html', logged_in=False)
+    return send_from_directory('build', 'index.html')
 
 @app.route('/comp2')
 def comp2():
-    if 'logged_in' in session and session['logged_in']:
-        user_id = session['user_id']
-        event_name = 'Competition 2'
-
-        already_registered = bool(events_collection.find_one({'user_id': user_id, 'event_name': event_name}))
-
-        return render_template('comp2.html', logged_in=True, already_registered=already_registered)
-
-    else:
-        return render_template('comp2.html', logged_in=False)
+    return send_from_directory('build', 'index.html')
 
 @app.route('/register_comp1', methods=['POST'])
 def register_comp1():
@@ -148,36 +138,29 @@ def register_comp2():
 
         return redirect(url_for('comp2'))
     else:
-        # Handle other HTTP methods (e.g., GET) appropriately
         flash('Method not allowed for this route.', 'error')
-        return redirect(url_for('comp2'))  # Redirect to comp2 page for other methods
-    
-# @app.route('/dash')
-# def dash():
-#     return render_template('dash.html')
-    
+        return redirect(url_for('comp2'))
 
 @app.route('/dash')
 def dash():
     if 'logged_in' in session and session['logged_in']:
         user_id = session['user_id']
 
-        # Retrieve user details from the database
         user = users_collection.find_one({'_id': user_id})
 
-        # Retrieve competitions the user has registered for
-        user_registrations = list(events_collection.find({'user_id': user_id}))  # Convert cursor to list
+        user_registrations = list(events_collection.find({'user_id': user_id}))
 
-        return render_template('dash.html', user=user, registrations=user_registrations)
+        return send_from_directory('build', 'index.html')
     else:
         flash('Please log in to access the dashboard.', 'error')
         return redirect(url_for('login'))
 
-
-
-
-
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    if path and (path.startswith('static/') or path.startswith('api/')):
+        return send_from_directory('build', path)
+    return send_from_directory('build', 'index.html')
 
 if __name__ == '__main__':
-    app.config['SECRET_KEY'] = 'xyz1234nbg789ty8inmcv2134'
     app.run(debug=True)
